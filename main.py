@@ -1,6 +1,8 @@
-# C:\Users\venka\Downloads\fastapi\main.py
+# main.py
 
+from typing import Optional
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -8,6 +10,15 @@ app = FastAPI()
 def index():
     return {"data": {"name": "venky"}}
 
-@app.get("/about")
-def about():
-    return {"data": {"info": "about page1"}}
+@app.get("/blog/unpublished")
+def unpublished():
+    return {"data": "all unpublished blogs"}
+
+class Blog(BaseModel):
+    title: str
+    body: str
+    published: Optional[bool] = None
+
+@app.post("/blog")
+def create_blog(request: Blog):
+    return {"data": request.dict()}
