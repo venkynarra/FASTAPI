@@ -1,24 +1,12 @@
-# main.py
-
-from typing import Optional
+# main.py (in the project root, next to blog/)
 from fastapi import FastAPI
-from pydantic import BaseModel
+from blog import models
+from blog.database import engine
 
 app = FastAPI()
 
-@app.get("/")
-def index():
-    return {"data": {"name": "venky"}}
-
-@app.get("/blog/unpublished")
-def unpublished():
-    return {"data": "all unpublished blogs"}
-
-class Blog(BaseModel):
-    title: str
-    body: str
-    published: Optional[bool] = None
+models.Base.metadata.create_all(bind=engine)
 
 @app.post("/blog")
-def create_blog(request: Blog):
-    return {"data": request.dict()}
+def create_blog(title: str, body: str):
+    return {"title": title, "body": body}
